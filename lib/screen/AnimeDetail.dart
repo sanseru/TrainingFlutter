@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 class AnimeDetail extends StatelessWidget {
   final String title;
@@ -24,7 +24,8 @@ class AnimeDetail extends StatelessWidget {
       ),
       body:
           // new WebView(
-          //   initialUrl: 'https://google.com',
+          //   initialUrl: "detik.com",
+          //   javascriptMode: JavascriptMode.unrestricted,
           // ),
           ListView(
         children: [Image.asset(this.imgPath)],

@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:training_app/widget/AlertDialogCustom.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
+// https://belajarflutter.com/http-request-cara-get-data-api-di-flutter/
 class HomePage extends StatefulWidget {
   static List animeTitle = [
     'Erased',
@@ -38,6 +41,8 @@ class _HomePageState extends State<HomePage> {
   bool latestAnime = true;
   bool comingsoon = false;
   bool refreshVis = false;
+  // final String futureAlbum;
+
   final String formatted = HomePage.formatter.format(HomePage.now);
 
   Future<void> pullRefresh() async {
@@ -51,6 +56,14 @@ class _HomePageState extends State<HomePage> {
         comingsoon = false;
       });
     });
+  }
+
+  final String apiUrl = "https://reqres.in/api/users?per_page=15";
+
+  Future<List<dynamic>> _fecthDataUsers() async {
+    var result = await http.get(Uri.parse(apiUrl));
+    // print(jsonDecode(result.body));
+    return jsonDecode(result.body)['data'];
   }
 
   @override
@@ -271,25 +284,52 @@ class _HomePageState extends State<HomePage> {
             Visibility(
               visible: comingsoon,
               child: Container(
-                height: 100,
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 20, 78, 163)),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'ICIKIWIR',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      const Text(
-                        'Semangat Belajar',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
+                // height: 100,
+                // decoration: const BoxDecoration(
+                //     color: Color.fromARGB(255, 20, 78, 163)),
+                child: FutureBuilder<List<dynamic>>(
+                  future: _fecthDataUsers(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(vertical: 38.0),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                              leading: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(
+                                    snapshot.data[index]['avatar']),
+                              ),
+                              title: Text(snapshot.data[index]['first_name'] +
+                                  " " +
+                                  snapshot.data[index]['last_name']),
+                              subtitle: Text(snapshot.data[index]['email']),
+                            );
+                          });
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
+                // child: Center(
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       const Text(
+                //         'ICIKIWIR',
+                //         style: TextStyle(fontSize: 18),
+                //       ),
+                //       const Text(
+                //         'Semangat Belajar',
+                //         style: TextStyle(fontSize: 18),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ),
             )
             // Container(
