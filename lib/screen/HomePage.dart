@@ -30,6 +30,24 @@ class HomePage extends StatefulWidget {
     '20.000',
   ];
 
+  static final List commingsoon = [
+    {
+      'titles': 'Spy x Family',
+      'images': 'assets/movie/spyfmaily.jpg',
+      'prices': '80.000',
+    },
+    {
+      'titles': 'One Piece',
+      'images': 'assets/movie/onepiece.jpg',
+      'prices': '90.0000',
+    },
+    {
+      'titles': 'Paripi Koumei',
+      'images': 'assets/movie/paripi.jpg',
+      'prices': '96.000',
+    },
+  ];
+
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('dd-MM-yyyy H:m');
 
@@ -39,9 +57,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool latestAnime = true;
-  bool comingsoon = false;
+  bool akandatang = false;
   bool refreshVis = false;
   // final String futureAlbum;
+
+  // final List<Map<String, String>> commingsoon = [
+  //   {
+  //     'titles': 'Spy x Family',
+  //     'images': 'assets/movie/spyfmaily.jpg',
+  //     'prices': '80.000',
+  //   },
+  //   {
+  //     'titles': 'One Piece',
+  //     'images': 'assets/movie/onepiece.jpg',
+  //     'prices': '90.0000',
+  //   },
+  //   {
+  //     'titles': 'Paripi Koumei',
+  //     'images': 'assets/movie/paripi.jpg',
+  //     'prices': '96.000',
+  //   },
+  // ];
 
   final String formatted = HomePage.formatter.format(HomePage.now);
 
@@ -53,7 +89,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         refreshVis = false;
         latestAnime = true;
-        comingsoon = false;
+        akandatang = false;
       });
     });
   }
@@ -68,6 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(HomePage.commingsoon[1]['titles']);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -180,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       setState(() {
                         latestAnime = true;
-                        comingsoon = false;
+                        akandatang = false;
                       });
                     },
                     child: Container(
@@ -198,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        comingsoon = true;
+                        akandatang = true;
                         latestAnime = false;
                       });
                     },
@@ -211,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              color: comingsoon == true
+                              color: akandatang == true
                                   ? Colors.orangeAccent
                                   : Colors.white)),
                     ),
@@ -282,76 +319,73 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             Visibility(
-              visible: comingsoon,
-              child: Container(
-                // height: 100,
-                // decoration: const BoxDecoration(
-                //     color: Color.fromARGB(255, 20, 78, 163)),
-                child: FutureBuilder<List<dynamic>>(
-                  future: _fecthDataUsers(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(vertical: 38.0),
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                radius: 30,
-                                backgroundImage: NetworkImage(
-                                    snapshot.data[index]['avatar']),
-                              ),
-                              title: Text(snapshot.data[index]['first_name'] +
-                                  " " +
-                                  snapshot.data[index]['last_name']),
-                              subtitle: Text(snapshot.data[index]['email']),
-                            );
-                          });
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
-                // child: Center(
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.center,
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       const Text(
-                //         'ICIKIWIR',
-                //         style: TextStyle(fontSize: 18),
-                //       ),
-                //       const Text(
-                //         'Semangat Belajar',
-                //         style: TextStyle(fontSize: 18),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+              visible: akandatang,
+              child: ListView.builder(
+                itemCount: HomePage.commingsoon.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var currentItem = HomePage.commingsoon[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    elevation: 10.0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            currentItem['images'],
+                            height: 150,
+                            // width: 150,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 3, top: 10),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentItem['titles'],
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Haikyu!!, yang diterbitkan di Indonesia dengan judul Haikyu!! Fly High! Volleyball!, adalah sebuah seri manga shōnen asal Jepang yang ditulis dan diilustrasikan oleh Haruichi Furudate. Bab-bab tunggalnya telah dimuat dalam majalah Weekly Shōnen Jump sejak bulan Februari 2012 hingga Juli 2020',
+                                      maxLines: 6,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.justify,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.paid),
+                                        Text('IDR ${currentItem['prices']}')
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          showAlertDialogCustom(
+                                              context,
+                                              currentItem['titles'],
+                                              currentItem['prices'],
+                                              currentItem['images']);
+                                        },
+                                        child: const Text('See Details'))
+                                  ]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             )
-            // Container(
-            //   height: 100,
-            //   decoration: BoxDecoration(color: Color.fromARGB(255, 20, 78, 163)),
-            //   child: Center(
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.center,
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Text(
-            //           'ICIKIWIR',
-            //           style: TextStyle(fontSize: 18),
-            //         ),
-            //         Text(
-            //           'Semangat Belajar',
-            //           style: TextStyle(fontSize: 18),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
